@@ -1,0 +1,4 @@
+0.0100 - September 13, 2013
+ * Initial public release.
+ * Includes a modified version of Firebase::Auth with Kiran Kumar's permission.
+
