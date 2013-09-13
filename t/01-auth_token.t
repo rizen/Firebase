@@ -13,11 +13,11 @@ BEGIN {
 
 my $tk = 'aca98axPOec';
 
-my $firebase= Firebase::Auth->new ( token =>$tk, admin => 'true' );
+my $firebase= Firebase::Auth->new ( secret =>$tk, admin => 'true' );
 
 isa_ok($firebase, 'Firebase::Auth');
 
-is ($firebase->token , $tk, 'token added');
+is ($firebase->secret , $tk, 'secret token added');
 
 
 my $custom_data = {'auth_data', 'foo', 'other_auth_data', 'bar'};
