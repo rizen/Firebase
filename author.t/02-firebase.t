@@ -23,7 +23,13 @@ $result = $firebase->delete('test');
 is $result, undef, 'delete object';
 
 
+my $firebase2 = Firebase->new(auth => { secret => $ENV{FIREBASE_TOKEN}, data => { id => 'abc' } }, firebase => $ENV{FIREBASE});
+my $data = $firebase2->put('status/abc/xxx', { type => 'info', message => 'this is a test' });
+is $data->{type}, 'info', 'can write to authorized location';
 
+eval { $firebase2->put('somewhere', { foo => 'bar' }); };
+
+is $@->message, '403 Forbidden', 'Cannot just write willy nilly.';
 
 done_testing();
 

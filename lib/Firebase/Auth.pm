@@ -117,7 +117,7 @@ Constructor.
 
 =over
 
-=item user_data
+=item data
 
 Optional. If you don't specify this, then you need to specify it when you call create_token(). This should be a hash reference of all the data you want to pass for user data. This data will be available as the C<auth> object in Firebase's security rules.
 
@@ -173,9 +173,9 @@ Generates a signed token. This is probably the only method you'll ever need to c
 
 =over
 
-=item user_data
+=item data
 
-Required if not specified in constructor. Defaults to the C<data> element in the constructor.A hash reference of parameters you wish to pass to the service.
+Required if not specified in constructor. Defaults to the C<data> element in the constructor. A hash reference of parameters you wish to pass to the service.
 
 =back
 
@@ -187,9 +187,9 @@ Generates a list of claims based upon the options provided to the constructor.
 
 =over
 
-=item user_data
+=item data
 
-Required. A hash reference of parameters you wish to pass to the service.
+Required. A hash reference of user data you wish to pass to the service.
 
 =back
 
