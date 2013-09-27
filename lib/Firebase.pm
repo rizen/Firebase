@@ -8,21 +8,22 @@ use Ouch;
 use JSON;
 use URI;
 
-has secret => (
-    is          => 'rw',
-    predicate   => 'has_secret',
-);
-
 has firebase => (
     is          => 'ro',
     required    => 1,
 );
 
-has auth        => (
+has auth => (
     is          => 'ro',
+    predicate   => 'has_auth',
+);
+
+has authobj        => (
+    is          => 'rw',
     lazy        => 1,
+    predicate   => 'has_authobj',
     default     => sub {
-        Firebase::Auth->new(secret => shift->secret);
+        Firebase::Auth->new(%{$_[0]->auth});
     },
 );
 
@@ -40,23 +41,23 @@ sub get {
 }
 
 sub delete {
-    my ($self, $path, $params) = @_;
-    my $uri = $self->create_uri($path, $params);
+    my ($self, $path) = @_;
+    my $uri = $self->create_uri($path);
     return $self->process_request( DELETE $uri );
 }
 
 sub put {
     my ($self, $path, $params) = @_;
-    my $uri = $self->create_uri($path, $params);
+    my $uri = $self->create_uri($path);
     my $request = POST($uri->as_string, Content_Type => 'form-data', Content => to_json($params));
     $request->method('PUT'); # because HTTP::Request::Common treats PUT as GET rather than POST
     return $self->process_request( $request );
 }
 
 sub create_uri {
-    my ($self, $path, $params) = @_;
+    my ($self, $path) = @_;
     my $url = 'https://'.$self->firebase.'.firebaseio.com/'.$path.'.json';
-    $url .= '?auth='.$self->auth->create_token($params) if $self->has_secret;
+    $url .= '?auth='.$self->authobj->create_token if $self->has_authobj || $self->has_auth;
     return URI->new($url);
 }
 
@@ -93,18 +94,12 @@ Firebase - An interface to firebase.com.
 
  use Firebase;
  
- my $fb = Firebase->new(firebase => 'myfirebase', secret => 'xxxxxxx' );
+ my $fb = Firebase->new(firebase => 'myfirebase', auth => { secret => 'xxxxxxx', data => { id => 'xxx', username => 'fred' }, admin => \1 } );
  
  my $result = $fb->put('foo', { this => 'that' });
  my $result = $fb->get('foo'); # or $fb->get('foo/this');
  my $result = $fb->delete('foo');
  
- # admin mode
- $fb->auth->admin('true');
- 
- # debug mode
- $fb->auth->debug('true');
-
 =head1 DESCRIPTION
 
 This is a light-weight wrapper around the Firebase REST API. Firebase is a real-time web service that acts as both a queue and a datastore. It's used for building real-time web apps and web services.
@@ -124,13 +119,13 @@ Constructor
 
 Required. The name of your firebase.
 
-=item secret
-
-The secret api token given to you by firebase. May be required depending upon your security rules. L<https://www.firebase.com/docs/security-quickstart.html>
-
 =item auth
 
-A L<Firebase::Auth> object. Will be generated for you automatically if you don't supply one.
+The parameters you'd pass to create a C<Firebase::Auth> object. This is a shortcut for constructing the object yourself and passing it into C<authobj>.
+
+=item authobj
+
+A L<Firebase::Auth> object. Will be generated for you automatically if you don't supply one, but do supply C<auth>.
 
 =item agent
 

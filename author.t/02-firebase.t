@@ -2,12 +2,13 @@ use lib '../lib';
 use Firebase;
 use Test::More;
 
-my $firebase = Firebase->new(secret => $ENV{FIREBASE_TOKEN}, firebase => $ENV{FIREBASE});
+my $firebase = Firebase->new(auth => { secret => $ENV{FIREBASE_TOKEN}, admin => \1 }, firebase => $ENV{FIREBASE});
 
 isa_ok($firebase, 'Firebase');
 
 is $firebase->firebase, $ENV{FIREBASE}, 'set the firebase';
-is $firebase->secret, $ENV{FIREBASE_TOKEN}, 'set the secret token';
+isa_ok $firebase->authobj, 'Firebase::Auth';
+is $firebase->authobj->secret, $ENV{FIREBASE_TOKEN}, 'set the secret token';
 
 my $result = $firebase->put('test', { foo => 'bar' });
 is $result->{foo}, 'bar', 'created object';
