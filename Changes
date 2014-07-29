@@ -1,5 +1,8 @@
 Changes for the Perl Module called Firebase
 
+0.0300 2014-07-28
+ - Added post and patch methods for the REST interface.
+
 0.0202 XXXX-XX-XX
  - Noted that debug flag does nothing in the REST interface.
 

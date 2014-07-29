@@ -36,8 +36,12 @@ ok !hug(), 'No exception thrown for deleting something';
 my $data = $firebase2->get('status/abc/yyy');
 is $data, undef, 'Nothing at the location we just deleted';
 
-my $data = $firebase2->post('status/abc', { fire => 'base', });
+my $data = $firebase2->post('status/abc', { fire => 'base', base => 'fire', });
 ok exists $data->{name}, "PUSHed to status with name: ". $data->{name};
+
+my $data = $firebase2->patch('status/abc/'. $data->{name}, { base => 'jumping', jumping => 'jack flash', });
+is $data->{base}, 'jumping', 'data overwritten via PATCH';
+is $data->{jumping}, 'jack flash', 'data added via PATCH';
 
 $firebase2->delete('status/abc/'.$data->{name});
 
