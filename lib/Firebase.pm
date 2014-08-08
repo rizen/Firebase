@@ -59,6 +59,21 @@ sub put {
     return $self->process_request( $request );
 }
 
+sub patch {
+    my ($self, $path, $params) = @_;
+    my $uri = $self->create_uri($path);
+    my $request = POST($uri->as_string, Content_Type => 'form-data', Content => to_json($params));
+    $request->method('PATCH'); # because HTTP::Request::Common treats PUT as GET rather than POST
+    return $self->process_request( $request );
+}
+
+sub post {
+    my ($self, $path, $params) = @_;
+    my $uri = $self->create_uri($path);
+    my $request = POST($uri->as_string, Content_Type => 'form-data', Content => to_json($params));
+    return $self->process_request( $request );
+}
+
 sub create_uri {
     my ($self, $path) = @_;
     my $url = 'https://'.$self->firebase.'.firebaseio.com/'.$path.'.json';
@@ -156,6 +171,41 @@ The path to the info you want to fetch.
 =head2 put
 
 Put some data into a firebase.
+
+=over
+
+=item path
+
+The path where the info should be stored.
+
+=item params
+
+A hash reference of parameters to be stored at this location.
+
+B<Warning:> Firebase doesn't work with arrays, so you can nest scalars and hashes here, but not arrays.
+
+=back
+
+=head2 patch
+
+Partial update of data in a location
+
+=over
+
+=item path
+
+The path where the info should be stored.
+
+=item params
+
+A hash reference of parameters to be updated at this location.
+
+=back
+
+
+=head2 post
+
+Adds data to an existing location, creating a hash of objects below the path.
 
 =over
 

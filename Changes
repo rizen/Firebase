@@ -1,6 +1,11 @@
 Changes for the Perl Module called Firebase
 
+0.0400 2014-07-28
+ - Added post and patch methods for the REST interface.
+ - Added file detailing the assumed set of Firebase rules for testing.
+
 0.0300 2014-05-03
+ - Noted that debug flag does nothing in the REST interface.
  - Updated tests for API changes at Firebase.
  - Added accessor for debug information, now that Firebase allows it via REST calls.
 
