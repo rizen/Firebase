@@ -31,5 +31,10 @@ is $header, 'eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9', 'encoded the data proper
 
 is decode_json(decode_base64($claims))->{admin}, 'true', 'claims encoded properly';
 
+my $fba = Firebase::Auth->new ( secret =>$tk, admin => 'true' );
+
+ok $fba->create_token, "don't need a uid if you're an admin";
+
+
 
 done_testing();
