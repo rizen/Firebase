@@ -115,7 +115,7 @@ Firebase - An interface to firebase.com.
 
  use Firebase;
  
- my $fb = Firebase->new(firebase => 'myfirebase', auth => { secret => 'xxxxxxx', data => { id => 'xxx', username => 'fred' }, admin => \1 } );
+ my $fb = Firebase->new(firebase => 'myfirebase', auth => { secret => 'xxxxxxx', data => { uid => 'xxx', username => 'fred' }, admin => \1 } );
  
  my $result = $fb->put('foo', { this => 'that' });
  my $result = $fb->get('foo'); # or $fb->get('foo/this');

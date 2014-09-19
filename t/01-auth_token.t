@@ -13,14 +13,14 @@ BEGIN {
 
 my $tk = 'aca98axPOec';
 
-my $firebase= Firebase::Auth->new ( secret =>$tk, admin => 'true' );
+my $firebase= Firebase::Auth->new ( secret =>$tk, admin => 'true', data => { uid => 1 } );
 
 isa_ok($firebase, 'Firebase::Auth');
 
 is ($firebase->secret , $tk, 'secret token added');
 
 
-my $custom_data = {'auth_data', 'foo', 'other_auth_data', 'bar'};
+my $custom_data = {'auth_data', 'foo', 'other_auth_data', 'bar', uid => 2 };
 
 my $token = $firebase->create_token ( $custom_data );
 diag $token;

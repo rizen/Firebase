@@ -6,8 +6,10 @@ For running the author tests, the following set of example rules is assumed:
     ".write": false,
     "status" : {
       "$user_id" : { 
-        ".write" : "auth.id == $user_id"
+        ".write" : "auth.uid == $user_id"
       }
     },
   }
 }
+
+These are loaded into the perlfirebase Firebase instance.

@@ -1,5 +1,9 @@
 Changes for the Perl Module called Firebase
 
+1.0000 2014-09-18
+ - Firebase Auth Token API changed in a backward incompatible way, this version of the module updates to deal with the new requirements.  
+ - Moved service testing out of author.t and into t.
+
 0.0400 2014-07-28
  - Added post and patch methods for the REST interface.
  - Added file detailing the assumed set of Firebase rules for testing.

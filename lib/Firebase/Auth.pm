@@ -7,6 +7,7 @@ use JSON::XS;
 use POSIX;
 use MIME::Base64;
 use Moo;
+use Ouch;
 
 
 has token_version => (
@@ -56,6 +57,15 @@ sub create_token {
 
 sub create_claims {
     my ($self, $data) = @_;
+    if (! exists $data->{uid}) {
+        ouch('missing param', 'Data payload must contain a "uid" key that must be a string.', 'uid');
+    }
+    elsif ($data->{uid} eq '') { 
+        ouch('param out of range', 'Data payload must contain a "uid" key that must not be empty or null.', 'uid');
+    }
+    elsif (length $data->{uid} > 256) {
+        ouch('param out of range', 'Data payload must contain a "uid" key that must not be longer than 256 characters.', 'uid');
+    }
     my %claims = (
         v       => $self->token_version,
         iat     => mktime(localtime(time)),
@@ -100,7 +110,7 @@ Firebase::Auth - Auth token generation for firebase.com.
 
  use Firebase::Auth;
  
- my $token = Firebase::Auth->new(token => 'xxxxxxxxx', admin => 'true', data => \%user_data )->create_token();
+ my $token = Firebase::Auth->new(token => 'xxxxxxxxx', admin => 'true', data => { uid => '1' } )->create_token();
 
 
 =head1 DESCRIPTION
@@ -119,7 +129,7 @@ Constructor.
 
 =item data
 
-Optional. If you don't specify this, then you need to specify it when you call create_token(). This should be a hash reference of all the data you want to pass for user data. This data will be available as the C<auth> object in Firebase's security rules.
+Optional. If you don't specify this, then you need to specify it when you call create_token(). This should be a hash reference of all the data you want to pass for user data. This data will be available as the C<auth> object in Firebase's security rules. If you do specify it, then it must have a C<uid> key that contain's the users unique user id, which must be a non-null string that is no longer than 256 characters.
 
 =item secret
 
@@ -177,7 +187,7 @@ Generates a signed token. This is probably the only method you'll ever need to c
 
 =item data
 
-Required if not specified in constructor. Defaults to the C<data> element in the constructor. A hash reference of parameters you wish to pass to the service.
+Required if not specified in constructor. Defaults to the C<data> element in the constructor. A hash reference of parameters you wish to pass to the service. If specified it must have a C<uid> key that contain's the users unique user id, which must be a non-null string that is no longer than 256 characters. 
 
 =back
 
@@ -185,13 +195,13 @@ Required if not specified in constructor. Defaults to the C<data> element in the
 
 =head2 create_claims
 
-Generates a list of claims based upon the options provided to the constructor.
+Generates a list of claims based upon the options provided to the constructor. 
 
 =over
 
 =item data
 
-Required. A hash reference of user data you wish to pass to the service.
+Required. A hash reference of user data you wish to pass to the service. It must have a C<uid> key that contain's the users unique user id, which must be a non-null string that is no longer than 256 characters.
 
 =back
 
@@ -222,6 +232,19 @@ A string to sign.
 
 =back
 
+
+
+=head1 EXCEPTIONS
+
+This module may L<Ouch> exceptions.
+
+=head2 missing param
+
+This will be thrown if a required parameter was not set. For example the C<uid> key in the C<data> payload.
+
+=head2 param out of range
+
+This will be thrown if a parameter is outside it's acceptable range. For example the C<uid> key in the C<data> payload.
 
 
 
