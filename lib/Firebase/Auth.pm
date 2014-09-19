@@ -57,7 +57,7 @@ sub create_token {
 
 sub create_claims {
     my ($self, $data) = @_;
-    if (! exists $data->{uid}) {
+    if (! $self->admin && ! exists $data->{uid}) {
         ouch('missing param', 'Data payload must contain a "uid" key that must be a string.', 'uid');
     }
     elsif ($data->{uid} eq '') { 
