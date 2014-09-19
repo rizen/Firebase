@@ -25,11 +25,11 @@ my $custom_data = {'auth_data', 'foo', 'other_auth_data', 'bar', uid => 2 };
 my $token = $firebase->create_token ( $custom_data );
 diag $token;
 
-my ($header, $claims, $signature) = split(/\./, $token);
+my @fragments = split(/\./, $token);
 
-is $header, 'eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9', 'encoded the data properly';
+is scalar(@fragments), 3, 'encoded the data properly';
 
-is decode_json(decode_base64($claims))->{admin}, 'true', 'claims encoded properly';
+is decode_json(decode_base64($fragments[1]))->{admin}, 'true', 'claims encoded properly';
 
 my $fba = Firebase::Auth->new ( secret =>$tk, admin => 'true' );
 
